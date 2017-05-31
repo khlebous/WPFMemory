@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+      <head>
+          <meta charset="UTF-8">
+      </head>
+      <body>
+	 <h4>WPF - część pierwsza</h4>
+    <p>Memory</p>
+    <ul>
+        <li><a href="memory.exe">Aplikacja przykładowa</a></li>
+        <li>
+            Opis:
+            <ul>
+                <li>zadanie polega na napisaniu gry memory</li>
+                <li>użytkowik zaznacza pary kart, jeżeli cyfry na kartach się zgadzaja to dana para znika</li>
+				<li>użytkownik ma 20 sekund na rozgrywkę</li>
+            </ul>
+        </li>
+        <li>
+            Wymagania:
+            <ul>
+                <li>
+                    Główne okno:
+                    <ul>
+                        <li>minimalny rozmiar 600 x 400, rozmiar początkowy 800 x 600</li>
+                        <li>okno podzielone na dwie części: dolna stałego rozmiaru (50px) i górna zajmująca resztę miejsca</li>
+                        <li>napis "Memory" na pasku tytułowym okna</li>
+                    </ul>
+                </li>
+                <li>
+                    dolna część okna:
+                    <ul>
+                        <li>po lewej zawiera dwa buttony:
+							<ul>
+								<li>reset:
+									<ul>
+										<li>losuje liczby na kartach</li>
+										<li>resetuje rozgrywke, resetuje czas</li>
+									</ul>
+								</li>
+								<li>play/pause
+									<ul>
+										<li>startuje/pauzuje odmierzanie czasu</li>
+										<li>tekst odpowiednio zmienia się na 'play' lub 'pause' w zalezności od stanu rozgrywki</li>
+									</ul>
+								</li>
+							</ul>						
+						</li>
+						<li>po prawej jest widoczny napis z czasem pozostałym do końca rozgrywki (na bieżąco aktualizowany)</li>						
+                    </ul>
+                </li>
+                <li>
+                    Górna część okna:
+                    <ul>
+                        <li>zawiera planszę 4x4 buttonów</li>
+						<li>styl buttonów:
+							<ul>
+								<li>margin równy 5px</li>
+								<li>obramowanie o grubości 2px i kolorze czarnym</li>
+								<li>wnętrze buttonu jest wypełnione kolorem AliceBlue</li>
+								<li>tekst znajduje się na środku, jest pogrubiony. Rozmiar czcionki: 15pkt</li>
+								<li>po najechaniu myszką na button kolor wnętrza zmienia się na DarkBlue, a kurson na hand</li>
+							</ul>						
+						</li>
+                    </ul>
+                </li>
+				<li>
+					Rozgrywka:
+					<ul>
+                        <li>trwa 20 sekund</li>
+						<li>można pauzować</li>						
+						<li>po nacisnięciu karta zmienia kolor na czerwony</li>	
+						<li>użytkownik zaznacza po dwie karty</li>				
+						<li>jeżeli zaznaczy parę o tym samym numerze to dana para znika</li>
+						<li>jeżeli nie, to rozgrywka toczy się dalej</li>						
+						<li>podczas zapauzowania użytkownik nie może zaznaczać par</li>
+						<li>po upływie czasu należy wyświetlić odpowiedni dialog z komunikatem (win/lost) oraz z pytaniem o ponowną rozgrywkę</li>
+						<li>jeżeli użytkowik naciśnie 'No' aplikacja kończy działanie</li>
+						<li>jeżeli użytkownik naciśnie 'Yes' rozgrywka jest resetowana</li>
+                    </ul>
+				</li>
+            </ul>
+        </li>
+        <li>
+            Uwagi:
+            <ul>
+            	<li>aplikacja jest odporna na skalowanie okna, kontrolki dostosowują się do zmian rozmiaru okna aplikacji</li>
+                <li>w razie niejasności program musi być zgodny z zachowaniem i wyglądem aplikacji przykładowej, jednak nie należy wzorować się na potencjalnych bugach</li>
+            </ul>
+        </li>
+        <li>
+            Wskazówki:
+            <ul>
+                <li>Button Style</li>
+                <li>Setter Template</li>
+                <li>ControlTemplate</li>				
+                <li>Border, Background="{TemplateBinding Background}",  ContentPresenter</li>
+				<li>ControlTemplate.Triggers</li>
+				<li>EvenSetter</li>
+                <li>INotifyPropertChanged</li>
+                <li>DispatcherTimer</li>
+            </ul>
+        </li>
+    </ul>
+
+    <ul>
+        <li>
+            Punktacja:
+            <ul>
+                <li>wygląd aplikacji (wraz z odpowiednimi stylami buttonów) - 4pkt</li>
+                <li>logika rozgrywki (dowolny styl buttonów) - 4pkt</li>
+            </ul>
+        </li>
+    </ul>
+    <h4>WPF - część druga</h4>
+    <ul>
+        <li><a href="memory.exe">Aplikacja przykładowa</a></li>
+		<li>przykładowe zdjęcia użyte w aplikacji: <a href="resources.7z">resources</a>
+		<li><b>aplikacja powinna wygladać jak przykładowa!</b></li>
+        <li>
+            Opis:
+            <ul>
+				<li>Memory:
+					<ul>
+						<li>rozszerzona wersja gry, zamiast liczb na kartach są tam zdjęcia</li>
+						<li>czas gry zwiększył się do 60 sekund</li>
+						<li>karty są odpowiednio animowane - dokładniejszy opis w dalszej części tekstu</li>
+						<li>użytkownik może zmieniać zdjęcia </li>
+					</ul>
+				</li>
+                <li>
+                    Główne okno:
+                    <ul>
+						<li>na dole oprócz buttonów i tekstu jest także expander</li>
+						<li>expander pokazuje/chowa ustawienia - jak w aplikacji przykładowej (Użyć bindowania do expandera)</li>						
+						<li>ustawienia:
+							<ul>
+								<li>automatyczna szerokość</li>
+								<li>na górze napis 'Game Settings'</li>
+								<li>następnie po kolei jedno pod drugim znadują się:</li>
+								<ul>
+									<li>slider - zakres od 500ms do 3000ms. Jest to czas animacji pokazywania się zdjęć na kartach oraz czas chowania się kart w przypadku trafienia pary</li>
+									<li>pod sliderem jest label pokazujący aktualną wartość slidera</li>
+									<li>checkbox, który wyświetla / chowa rozszerzony widok listy opisanej poniżej</li>
+									<li>lista ze zdjęciami:
+										<ul>
+											<li>co drugi element ma inny kolor - #efcc9b, #cceabe</li>
+											<li>wyświetla expander z edytowalnym tytułem - jak w aplikacji przykładowej</li>
+											<li>po nacisnięciu expandera pokazuje się rozszerzony widok elementu</li>
+											<li>rozszerzony widok zawiera po lewej stronie miniaturkę zdjęcia (70x90px)</li>
+											<li>po prawej zawiera informacje o danym zdjęciu - nazwę pliku i datę stworzenia. Styl jak w aplikacji przykładowej - kolory Beige i LightGray</li>
+											<li>po nacisnięciu na zdjęcie, wyświetla się okienko wyboru pliku, które umożliwia zmianę zdjęcia na karcie. Zmiana następuje natychmiast, a nie po zakończeniu danej rundy</li>
+										</ul>									
+									</li>
+								</ul>
+							</ul>
+						</li>
+						<li>plansza z buttonami:
+							<ul>
+								<li>zmienić styl z częsci laboratoryjnej, aby zamiast tekstu były widoczne zdjęcia</li>
+								<li>po nacisnięciu na button odpala się animacja o długości równej wartości ze slidera</li>
+								<li>gdy zostanie trafiona para - odpala się animacja, która chowa daną parę (buttony zmieniają opacity). Długość animacji to wartość ze slidera</li>
+								<li>gdy para nie zostanie trafiona - odpala się animacja chowania zdjęcia. Długość animacji to wartość ze slidera</li>
+								<li>animacje powinny działać jak w aplikacji przykładowej</li>
+							</ul>
+						</li>
+                    </ul>
+                </li>
+                <li>
+                    Rozgrywka:
+                    <ul>
+                        <li>gracz ma 60 sekund na rozgrywkę, można pauzować</li>
+						<li>po wygraniu / przegraniu wyświetla się komunikat z pytaniem o ponowną rozgrywkę</li>
+						<li>jeżeli użytkownik naciśnie tak, gra rozpoczyna się od nowa</li>
+						<li>jeżeli użytkownik naciśnie nie, odpala się końcowa animacja opisana poniżej</li>
+                    </ul>
+                </li>
+                <li>
+                    Końcowa animacja:
+                    <ul>
+                        <li>karty są animowane jedna po drugiej zaczynając od lewej górnej karty</li>
+						<li>czas animacji pierwszej karty to: 1500ms</li>
+						<li>czas animacji każdej następnej karty to 90% czasu animacji poprzedniej karty</li>
+						<li>animacja zaczyna się od stanu Opacity = 0 do stanu Opacity = 0.5</li>
+						<li>podczas końcowej animacji przyciski reset i play są nieaktywne</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            Dodatkowe wymagania:
+            <ul>
+                <li>obowiązkowo należy spełnić wzystkie wymagania części pierwszej zadania</li>
+                <li>należy zwrócić uwagę, aby kontrolki zachowywały się i wyglądały jak w aplikacji przykładowej (uwaga na skalowanie, zmianę zawartości itd.)</li>
+                <li>w razie niejasności program musi być zgodny z zachowaniem i wyglądem aplikacji przykładowej (z wyjątkiem potencjalnych bugów)</li>
+            </ul>
+        </li>
+        <li>
+            Wskazówki:
+            <ul>
+				<li>Expander.Header</li>
+                <li>ControlTemplate, ContentPresenter</li>			
+                <li>ControlTemplate.Triggers</li>
+				<li>Template.FindName</li>
+				<li>DoubleAnimation</li>
+				<li>DoubleAnimation.BeginTime, DoubleAnimation.Completed, DoubleAnimation.BeginAnimation</li>
+				<li>FillBehavior.Stop;</li>
+				<li>OpacityProperty</li>
+            </ul>
+        </li>
+    </ul>
+    <ul>
+        <li>
+            Punktacja:
+            <ul>
+                <li>menu z ustawieniami - 1pkt</li>
+                <li>zmiana długości animacji kart - slider - 1pkt</li>
+                <li>checkbox expand/collapseAll - 1pkt</li>
+				<li>stylizacja listy - 2pkt</li>
+                <li>obsługa zmiany zdjęcia - 2pkt</li>
+                <li>poprawna animacja kart - 3pkt</li>
+                <li>końcowa animacja kart - 2pkt</li>
+            </ul>
+        </li>
+    </ul>
+      </body>
+</html>

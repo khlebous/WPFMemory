@@ -12,19 +12,48 @@
 
         <local:ExpanderConverter x:Key="ExpanderConverter"/>
         <local:SliderConverterToInt x:Key="SliderConverterToInt"/>
+        <local:BrushToVisibility x:Key="BrushToVisibility"/>
+        <local:DoubleToDurationConverter x:Key="DoubleToDurationConverter"/>
 
+        <Storyboard x:Key="PlayAnimationShowPicture">
+            <DoubleAnimation 
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.0" To="1.0"
+                             Duration="{Binding ElementName=FlipBackSlider, Path=Value, Mode=OneWay, Converter={StaticResource DoubleToDurationConverter}}"/>
+
+        </Storyboard>
+        <Storyboard x:Key="PlayAnimationHidePicture">
+            <DoubleAnimationUsingKeyFrames 
+                             Storyboard.TargetProperty="Opacity">
+                <!--<LinearDoubleKeyFrame Value="1" KeyTime="0:0:0" />-->
+                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.3" />
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.8" />
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        
         <Style x:Key="MemoryButtonStyle" TargetType="{x:Type Button}">
             <EventSetter Event="ButtonBase.Click" Handler="GameButton_Click"/>
             <Setter Property="Margin" Value="5,5,5,5"/>
             <Setter Property="Background" Value="AliceBlue"/>
             <Setter Property="BorderBrush" Value="Black"/>
+            
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
+                    <ControlTemplate TargetType="{x:Type Button}" >
                         <Border CornerRadius="0" Background="{TemplateBinding Background}" 
                                 BorderBrush="Black"
                                 BorderThickness="2">
-                            <ContentPresenter x:Name="ButtonContentPresenter"
+                            <Image Name="tmpImage" 
+                                Stretch="Fill"
+                                   Source="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" 
+                                   Visibility="Visible"
+                                   Opacity="0">
+                                <Image.Triggers>
+                                    
+                                </Image.Triggers>
+                            </Image>
+
+                            <!--<ContentPresenter x:Name="ButtonContentPresenter"
                                                 VerticalAlignment="Center"  
                                                 HorizontalAlignment="Center">
                                 <ContentPresenter.Resources>
@@ -34,18 +63,25 @@
                                         <Setter Property="FontSize" Value="15"/>
                                     </Style>
                                 </ContentPresenter.Resources>
-                            </ContentPresenter>
+                            </ContentPresenter>-->
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="DarkBlue"/>
                                 <Setter Property="Cursor" Value="Hand"/>
                             </Trigger>
+                            <!--<Trigger Property="Button.IsPressed" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource tmpStory}"/>
+                                </Trigger.EnterActions>
+                            </Trigger>-->
                         </ControlTemplate.Triggers>
+                        
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+        
     </Window.Resources>
     <Grid>
         <Grid>
@@ -56,7 +92,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
+
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -112,7 +148,7 @@
                               Checked="CheckBox_Checked" Unchecked="CheckBox_UnChecked"
                               HorizontalAlignment="Right"
                               Margin="0,20,40,10">
-                              Expand/Collapse All
+                        Expand/Collapse All
                     </CheckBox>
                     <ListView Grid.Row="3" Name="ImagesListView" AlternationCount="2"
                               BorderThickness="0" Padding="7,0,7,0" >
