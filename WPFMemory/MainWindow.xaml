@@ -12,25 +12,40 @@
 
         <local:ExpanderConverter x:Key="ExpanderConverter"/>
         <local:SliderConverterToInt x:Key="SliderConverterToInt"/>
-        <local:BrushToVisibility x:Key="BrushToVisibility"/>
         <local:DoubleToDurationConverter x:Key="DoubleToDurationConverter"/>
 
         <Storyboard x:Key="PlayAnimationShowPicture">
             <DoubleAnimation 
                              Storyboard.TargetProperty="Opacity"
-                             From="0.0" To="1.0"
+                             From="0.0" To="1.0" FillBehavior="Stop"
                              Duration="{Binding ElementName=FlipBackSlider, Path=Value, Mode=OneWay, Converter={StaticResource DoubleToDurationConverter}}"/>
 
         </Storyboard>
+
         <Storyboard x:Key="PlayAnimationHidePicture">
+            <DoubleAnimation 
+                             Storyboard.TargetProperty="Opacity"
+                             From="1.0" To="0.0"
+                             Duration="{Binding ElementName=FlipBackSlider, Path=Value, Mode=OneWay, Converter={StaticResource DoubleToDurationConverter}}"/>
+
+        </Storyboard>
+
+        <Storyboard x:Key="PlayAnimationHideButton">
             <DoubleAnimationUsingKeyFrames 
                              Storyboard.TargetProperty="Opacity">
-                <!--<LinearDoubleKeyFrame Value="1" KeyTime="0:0:0" />-->
                 <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.3" />
                 <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.8" />
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
-        
+
+        <Storyboard x:Key="EndAnimaion">
+            <DoubleAnimation 
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.0" To="0.5"
+                             Duration="1500"/>
+
+        </Storyboard>
+
         <Style x:Key="MemoryButtonStyle" TargetType="{x:Type Button}">
             <EventSetter Event="ButtonBase.Click" Handler="GameButton_Click"/>
             <Setter Property="Margin" Value="5,5,5,5"/>
@@ -43,40 +58,19 @@
                         <Border CornerRadius="0" Background="{TemplateBinding Background}" 
                                 BorderBrush="Black"
                                 BorderThickness="2">
-                            <Image Name="tmpImage" 
+                            <Image Name="ImageInButton" 
                                 Stretch="Fill"
                                    Source="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" 
                                    Visibility="Visible"
                                    Opacity="0">
-                                <Image.Triggers>
-                                    
-                                </Image.Triggers>
                             </Image>
-
-                            <!--<ContentPresenter x:Name="ButtonContentPresenter"
-                                                VerticalAlignment="Center"  
-                                                HorizontalAlignment="Center">
-                                <ContentPresenter.Resources>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="TextAlignment" Value="Center" />
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Setter Property="FontSize" Value="15"/>
-                                    </Style>
-                                </ContentPresenter.Resources>
-                            </ContentPresenter>-->
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="DarkBlue"/>
                                 <Setter Property="Cursor" Value="Hand"/>
                             </Trigger>
-                            <!--<Trigger Property="Button.IsPressed" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource tmpStory}"/>
-                                </Trigger.EnterActions>
-                            </Trigger>-->
                         </ControlTemplate.Triggers>
-                        
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -138,7 +132,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Slider Name="FlipBackSlider" Grid.Row="0" 
-                                    Minimum="500" Maximum="3000" Value="1000" 
+                                    Minimum="200" Maximum="3000" Value="200" 
                                     Margin="0,0,6,0"/>
                             <TextBlock Grid.Row="1" TextAlignment="Center"
                                        Text="{Binding Value, ElementName=FlipBackSlider,  Converter={StaticResource SliderConverterToInt}}"/>
