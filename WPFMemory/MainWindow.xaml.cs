@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -24,7 +26,7 @@ namespace WPFMemory
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool)value ? 0 : 300;
+            return (bool)value ?   new GridLength(0, GridUnitType.Pixel) :  GridLength.Auto;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -59,7 +61,7 @@ namespace WPFMemory
     /// </summary>
     public partial class MainWindow : Window
     {
-        static int GameTimeInSeconds = 5;
+        static int GameTimeInSeconds = 10;
         static int MaxLeftButtons = 8;
         bool IsListShuffled = false;
 
@@ -92,14 +94,37 @@ namespace WPFMemory
 
         public void LoadImagesToObservableCollection()
         {
-            for (int i = 1; i < 9; i++)
+            System.IO.DirectoryInfo folder = new System.IO.DirectoryInfo($"{Environment.CurrentDirectory}/Images/");
+            string[] extensions = new[] { ".jpg", ".gif", ".png" };
+            FileInfo[] images = folder.EnumerateFiles()
+                     .Where(f => extensions.Contains(f.Extension.ToLower())).ToArray();
+
+            //foreach (FileInfo img in images)
+            for (int i = 1; i <= images.Length; i++)
+            {
+                FileInfo img = images[i - 1];
                 oc.Add(new ImagesListViewItem()
                 {
                     Source = $"{Environment.CurrentDirectory}/Images/{i}.jpg",
+                    Path = img.Directory.ToString(),
                     FileName = $"{i}.jpg",
                     CreationDate = System.IO.Directory.GetCreationTime($"Images/{i}.jpg"),
                     Header = $"name{i}"
                 });
+                //    System.Windows.Forms.ListViewItem lvi = new System.Windows.Forms.ListViewItem(img.FullName);
+
+                //    lvi.Name = System.IO.Path.GetFileName(img.Name);
+                //    Thumbnails.Items.Add(lvi);
+            }
+
+            //for (int i = 1; i < 9; i++)
+            //    oc.Add(new ImagesListViewItem()
+            //    {
+            //        Source = $"{Environment.CurrentDirectory}/Images/{i}.jpg",
+            //        FileName = $"{i}.jpg",
+            //        CreationDate = System.IO.Directory.GetCreationTime($"Images/{i}.jpg"),
+            //        Header = $"name{i}"
+            //    });
         }
         public void InitBoardForNewGame()
         {
@@ -312,5 +337,59 @@ namespace WPFMemory
             }
         }
 
+        private void doub_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Image iamgeToChange = sender as Image;
+            string s = iamgeToChange.Source.ToString();
+            int ii = s.Length - 1;
+            while (s[ii] != '/')
+                ii--;
+            string imageName = s.Substring(ii + 1);
+
+            if (e.ClickCount < 2)
+                return;
+
+            var ofd = new OpenFileDialog()
+            {
+                Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png"
+            };
+            ImagesListViewItem ilvi = new ImagesListViewItem();
+            if (ofd.ShowDialog() == true)
+            {
+                string path = ofd.FileName;
+                ilvi = new ImagesListViewItem()
+                {
+                    Source = path,
+                    Path = path,
+                    FileName = path,
+                    CreationDate = System.IO.Directory.GetCreationTime(path),
+                    Header = path
+                };
+            }
+            // foreach(var el in oc)
+            int i;
+            ImagesListViewItem el = new ImagesListViewItem();
+            for (i = 0; i < oc.Count; i++)
+            {
+                el = oc[i];
+                if (el.FileName == imageName)
+                {
+                    oc[i].Source = ilvi.Source;
+                    oc[i].FileName = ilvi.FileName;
+                    oc[i].Path = ilvi.Path;
+                    oc[i].CreationDate = ilvi.CreationDate;
+                    oc[i].Header = ilvi.Header;
+                    ImagesListView.ItemsSource = oc;
+                    ImagesListView.Items.Refresh();
+                    break;
+                }
+            }
+
+            foreach(Button b in ListWithButttons)
+            {
+                if (b.Content.ToString() == el.Source.ToString())
+                    b.Content = oc[i].Source;
+            }
+        }
     }
 }

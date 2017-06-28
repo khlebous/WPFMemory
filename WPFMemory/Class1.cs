@@ -13,6 +13,7 @@ namespace WPFMemory
         public string FileName { get; set; }
         public DateTime CreationDate { get; set; }
         public string Header { get; set; }
+        public string Path { get; set; }
 
         bool _amIExpanded = false;
         public bool AmIExpanded {
